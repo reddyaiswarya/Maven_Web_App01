@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+    environment {
+        PATH="/opt/maven/bin:$PATH"
+    }
+    stages{
+        stage("gitclone"){
+            steps{
+                git credentialsId: '8f357e50-1aef-45dd-ba9d-4fdcbbd7ccb8', url: 'https://github.com/reddyaiswarya/Maven_Web_App01.git'
+            }
+        }
+        stage('mavengoals'){
+            steps{
+                sh "mvn clean package"
+            }
+        }
+        stage('deploy'){
+            steps{
+                deploy adapters: [tomcat9(credentialsId: '7009e6f4-556e-4b49-af95-eb61d9417174', path: '', url: 'http://192.168.206.128:8081/')], contextPath: 'jenkinswebapp1', war: '**/*.war'
+            }
+        }
+    }
+}
